@@ -2,6 +2,7 @@ flags: {}
 extra-package-dbs: []
 packages:
 - '.'
+- '../random-eff'
 extra-deps:
 - hasql-pool-0.4
 - hasql-th-0.2
