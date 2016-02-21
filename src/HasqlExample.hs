@@ -27,7 +27,8 @@ main :: IO ()
 main = do
    pool <- HP.acquire (4, 60.0, hset)
    r <- runLift $ runHasql pool $
-      db $ appendMessage "Hello World!"
+      {-db $ appendMessage "Hello World!"-}
+      db $ getMessage 3
    print r
    where
       hset = H.settings "localhost" 5432 "andrew" "" "test_eff"
@@ -44,12 +45,12 @@ runHasql pool = loop
       loop = freeMap
                (return . Right)
                (\u -> handleRelay u loop act)
-      act (Hasql s) = lift $ HP.use pool s >>= \case
+      act (Hasql s) = (lift $ HP.use pool s) >>= \case
          Left  e -> return $ Left e
-         Right v -> return $ Right v
+         Right v -> loop v
 
 db :: (Member Hasql e) => H.Session a -> Eff e a
-db = send . inj . Hasql
+db act = send . inj $ Hasql act
 
 appendMessage :: Text -> H.Session Int64
 appendMessage txt = sess
