@@ -78,7 +78,6 @@ executable random-example
       
                      ,  extensible-effects
                      ,  random
-                     ,  random-eff
 
 executable functor-example
    main-is:             FunctorExample.hs
@@ -120,3 +119,16 @@ executable free-example
    ghc-options:         -Wall -rtsopts -ddump-deriv
 
    build-depends:       base                 ==4.*
+
+executable console-example
+   main-is:             ConsoleExample.hs
+   hs-source-dirs:      src
+   default-language:    Haskell2010
+
+   ghc-options:         -Wall -rtsopts
+
+   build-depends:       base                 ==4.*
+      
+                     ,  extensible-effects
+                     ,  text
+

@@ -5,6 +5,7 @@
 {-# LANGUAGE LambdaCase                #-}
 {-# LANGUAGE MultiParamTypeClasses     #-}
 {-# LANGUAGE OverloadedStrings         #-}
+{-# LANGUAGE StandaloneDeriving        #-}
 {-# LANGUAGE TypeFamilies              #-}
 {-# LANGUAGE TypeOperators             #-}
 
@@ -33,9 +34,14 @@ main = do
    where
       hset = H.settings "localhost" 5432 "andrew" "" "test_eff"
 
-data Hasql a
-   = Hasql (H.Session a)
-   deriving (Functor, Typeable)
+data Hasql n
+   = forall a. Hasql (H.Session a) (a -> n)
+   deriving (Typeable)
+
+deriving instance Functor Hasql
+
+db :: (Member Hasql e) => H.Session a -> Eff e a
+db act = send . inj $ Hasql act id
 
 runHasql
    :: SetMember Lift (Lift IO) r
@@ -45,12 +51,9 @@ runHasql pool = loop
       loop = freeMap
                (return . Right)
                (\u -> handleRelay u loop act)
-      act (Hasql s) = (lift $ HP.use pool s) >>= \case
+      act (Hasql s k) = (lift $ HP.use pool s) >>= \case
          Left  e -> return $ Left e
-         Right v -> loop v
-
-db :: (Member Hasql e) => H.Session a -> Eff e a
-db act = send . inj $ Hasql act
+         Right v -> loop (k v)
 
 appendMessage :: Text -> H.Session Int64
 appendMessage txt = sess
