@@ -36,12 +36,16 @@ runConsoleLogging
    => Eff (Logger :> r) a -> Eff r a
 runConsoleLogging = loop
    where
-      loop = freeMap
-               return
-               (\u -> handleRelay u loop act)
-      act (Logger msg k) = do
-         lift $ putStrLn msg
-         loop (k ())
+     loop :: SetMember Lift (Lift IO) r
+             => Eff (Logger :> r) a -> Eff r a
+     loop = freeMap
+       return
+       (\u -> handleRelay u loop act)
+     act :: SetMember Lift (Lift IO) r
+            => Logger (Eff (Logger :> r) a) -> Eff r a
+     act (Logger msg k) = do
+       lift $ putStrLn msg
+       loop (k ())
 
 {-main :: IO ()-}
 {-main = do-}
