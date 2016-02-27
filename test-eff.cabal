@@ -36,7 +36,7 @@ executable reader-example
    ghc-options:         -Wall -rtsopts
 
    build-depends:       base                 ==4.*
-      
+
                      ,  extensible-effects
 
 executable lift-example
@@ -47,7 +47,7 @@ executable lift-example
    ghc-options:         -Wall -rtsopts
 
    build-depends:       base                 ==4.*
-      
+
                      ,  extensible-effects
                      ,  random
 
@@ -59,12 +59,12 @@ executable hasql-example
    ghc-options:         -Wall -rtsopts
 
    build-depends:       base                 ==4.*
-      
+
                      ,  extensible-effects
                      ,  contravariant
                      ,  text
-                     ,  hasql 
-                     ,  hasql-pool
+                     ,  hasql
+                     ,  hasql-pool >= 0.4
                      ,  hasql-th
 
 executable random-example
@@ -75,7 +75,7 @@ executable random-example
    ghc-options:         -Wall -rtsopts
 
    build-depends:       base                 ==4.*
-      
+
                      ,  extensible-effects
                      ,  random
 
@@ -87,7 +87,7 @@ executable functor-example
    ghc-options:         -Wall -rtsopts -ddump-deriv
 
    build-depends:       base                 ==4.*
-      
+
                      ,  extensible-effects
                      ,  free
 
@@ -99,7 +99,7 @@ executable reader-impl-example
    ghc-options:         -Wall -rtsopts
 
    build-depends:       base                 ==4.*
-      
+
                      ,  extensible-effects
 
 executable reader-writer-impl-example
@@ -110,7 +110,7 @@ executable reader-writer-impl-example
    ghc-options:         -Wall -rtsopts
 
    build-depends:       base                 ==4.*
-      
+
 executable free-example
    main-is:             FreeExample.hs
    hs-source-dirs:      src
@@ -128,7 +128,6 @@ executable console-example
    ghc-options:         -Wall -rtsopts
 
    build-depends:       base                 ==4.*
-      
+
                      ,  extensible-effects
                      ,  text
-
