@@ -4,6 +4,7 @@
 {-# LANGUAGE FlexibleContexts          #-}
 {-# LANGUAGE MultiParamTypeClasses     #-}
 {-# LANGUAGE StandaloneDeriving        #-}
+{-# LANGUAGE TypeFamilies              #-}
 {-# LANGUAGE TypeOperators             #-}
 
 module ConsoleExample where
@@ -34,18 +35,13 @@ logM msg = send . inj $ Logger msg id
 runConsoleLogging
    :: SetMember Lift (Lift IO) r
    => Eff (Logger :> r) a -> Eff r a
-runConsoleLogging = loop
+runConsoleLogging = freeMap
+  return
+  (\u -> handleRelay u runConsoleLogging act)
    where
-     loop :: SetMember Lift (Lift IO) r
-             => Eff (Logger :> r) a -> Eff r a
-     loop = freeMap
-       return
-       (\u -> handleRelay u loop act)
-     act :: SetMember Lift (Lift IO) r
-            => Logger (Eff (Logger :> r) a) -> Eff r a
      act (Logger msg k) = do
        lift $ putStrLn msg
-       loop (k ())
+       runConsoleLogging (k ())
 
 {-main :: IO ()-}
 {-main = do-}
